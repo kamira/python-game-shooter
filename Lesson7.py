@@ -1,7 +1,9 @@
+
 # Create Window and Close Window
 
 import pygame, time, random
 from pygame.locals import *
+from classes.Item import *
 
 WIDTH = 400
 HEIGHT = 600
@@ -27,36 +29,15 @@ PINK	= (0xFF, 0x65, 0xFD)
 ARIAL20 = pygame.font.SysFont("Arial", 20)
 # Variables for keeping track of my game player etc
 # Class class
-class ItemValue(object):
-	def __init__(self, x, y, w, h):
-		self.x = x
-		self.y = y
-		self.w = w
-		self.h = h
-	def moveX2( self, shift ):
-		self.x += shift
-	def moveY2( self, shift ):
-		self.y += shift
-	def moveX( self, shift, w):
-		tmp = self.x + shift + self.w
-		if tmp <= w and (self.x + shift) >= 0 :
-			self.x += shift
-	def moveY( self, shift, h ):
-		tmp = self.y + shift + self.h
-		if tmp <= h and (self.y + shift) >= 0 :
-			self.y += shift
-class ItemBullet(object):
-	def __init__(self, x, y, speed):
-		self.x = x
-		self.y = y
-		self.speed = speed
-	def move( self ):
-		self.y -= self.speed
+
+
+
+
 # Default value
-item1 = ItemValue(200, 200, 50, 50)
+Player = Item( [200,200], [50,50], [0,0], "sprite/f15.png", True, [0, WIDTH, 0, HEIGHT] )
 others = []
 bullets = []
-bulletSpeed = 5
+bulletSpeed = -5
 otherSpeed = 8
 moveX = 0
 moveY = 0
@@ -88,7 +69,7 @@ while not quit:
 			# Key Event for fire
 			if event.key == K_SPACE:
 				if len(bullets) <= 8:
-					bullets.append( ItemBullet( (item1.x + int(item1.w / 2)), item1.y, bulletSpeed))
+					bullets.append( Item( [(Player.getObjectX() + int(Player.getObjectHeight() / 2)), Player.getObjectY()], [4,4], [0,bulletSpeed]))
 		elif event.type == KEYUP:
 			if event.key == K_DOWN or event.key == K_UP:
 				moveY = 0
@@ -99,32 +80,31 @@ while not quit:
 	# Perform calculation
 
 	for other in others:
-		other.moveY2(otherSpeed)
-		if other.y > HEIGHT:
-			others = [ x for x in others if not (x.x == other.x and x.y == other.y)]
+		other.movObjectCoordination()
+		if other.getObjectY() > HEIGHT:
+			others = [ x for x in others if not (x.getObjectX() == other.getObjectX() and x.getObjectY() == other.getObjectY())]
 	if random.randint(0, 10) == 0:
-		others.append( ItemValue(random.randint(0, 500), 0, 50, 50) )
+		others.append( Item( [random.randint(0, 500),0], [50,50], [0,8], "sprite/su27.png") )
 
 	for bullet in bullets:
-		bullet.move()
-		if bullet.y <= 0:
-			bullets = [x for x in bullets if not (x.y == bullet.y)]
+		bullet.movObjectCoordination()
+		if bullet.getObjectY() <= 0:
+			bullets = [x for x in bullets if not (x.getObjectY() == bullet.getObjectY())]
 
-	item1.moveX(moveX, WIDTH)
-	item1.moveY(moveY, HEIGHT)
+	Player.movObjectCoordination([moveX, moveY])
 
 	window.fill( BACKGROUND_COLOR )
 
 	# Draw graphics
 	for other in others:
-		window.blit(OTHER_SPRITE, ((other.x - (other.w / 2)), (other.y - (other.h / 2))) )
+		window.blit(OTHER_SPRITE, ((other.getObjectX() - (other.getObjectWidth() / 2)), (other.getObjectY() - (other.getObjectHeight() / 2))) )
 		# pygame.draw.rect( window, OTHER_COLOR, ((other.x - (other.w / 2)), (other.y - (other.h / 2)), other.w, other.h) )
 
 	for bullet in bullets:
-		pygame.draw.circle( window, BULLET_COLOR, ((bullet.x - 2), (bullet.y - 2)), 4, 4)
-	window.blit(OUR_SPRITE, ( item1.x ,  item1.y ))
+		pygame.draw.circle( window, BULLET_COLOR, ((bullet.getObjectX() - 2), (bullet.getObjectY() - 2)), 4, 4)
+	window.blit(OUR_SPRITE, Player.getObjectXYByList() )
 	# pygame.draw.rect( window, OUR_COLOR, ( (item1.x - (item1.w / 2) ) , ( item1.y - ( item1.h / 2) ), item1.w, item1.h))
-	label_coordinates = ARIAL20.render("Mouse @ " + str( x ) + "," + str( y ) + "; Item @ " + str( item1.x + 25 ) + "," + str( item1.y + 25 ), 1, WHITE)
+	label_coordinates = ARIAL20.render("Mouse @ " + str( x ) + "," + str( y ) + "; Item @ " + str( Player.getObjectX() + 25 ) + "," + str( Player.getObjectY() + 25 ), 1, WHITE)
 	window.blit(label_coordinates, (000,000))
 	pygame.display.update()
 	fps.tick(60)
