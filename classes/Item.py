@@ -17,9 +17,9 @@ class ObjectPlayer(object):
         self.__player = player
     def getPlayerStatus(self):
         return self.__player
-    def setObjectSprite(self, spr = None):
+    def setPlayerSprite(self, spr = None):
         self.__sprite = spr
-    def getObjectSprite(self):
+    def getPlayerSprite(self):
         return self.__sprite
 
 # 設定玩家可移動範圍
@@ -53,12 +53,12 @@ class ObjectCoordinate(ObjectSize, ObjectPlayer, PlayerArea):
         w,h = super().getSize()
         # 確認是否為玩家本身
         if super().getPlayerStatus() :
-            print("X: " + str(x) + ";Y: " + str(y) )
+            # print("X: " + str(x) + ";Y: " + str(y) )
             newX = self.__x + x
             newY = self.__y + y
-            print("New X: " + str(newX) + ";New Y: " + str(newY) )
+            # print("New X: " + str(newX) + ";New Y: " + str(newY) )
             (areaWS, areaWE, areaHS, areaHE) = super().getPlayerArea()
-            print(str(areaWS) + ";" + str(areaWS) + ";" + str(areaHS) + ";" + str(areaHE) )
+            # print(str(areaWS) + ";" + str(areaWS) + ";" + str(areaHS) + ";" + str(areaHE) )
             # 避免超過玩家移動區域
             if ( newX > areaWS ) and ( ( newX + w ) < areaWE ):
                 self.__x = newX
@@ -82,9 +82,11 @@ class ObjectCoordinate(ObjectSize, ObjectPlayer, PlayerArea):
         (x,y) = coor
         self.__speedInX = x
         self.__speedInY = y
+    def getSpeed(self):
+        return self.__speedInX, self.__speedInY
 
 class Item(ObjectCoordinate):
-    def __init__(self, objectCoordinationArray = [0,0], objectSizeArray = [0,0], objectSpeed = [0,0], spr = None, player = False, moveAreaArray = [0,0,0,0]):
+    def __init__(self, objectCoordinationArray = [0,0], objectSizeArray = [0,0], objectSpeed = [0,0], spr = None, player = False, moveAreaArray = [0,0,0,0], time_to_die = 999):
         # objectCoordination 為物件座標
         super().setCoordination(objectCoordinationArray)
         # objectWidth, objectHeight 分別為物件的寬與高
@@ -96,7 +98,8 @@ class Item(ObjectCoordinate):
         # objectSpeed 為物件在XY的每次位移量
         super().setSpeed(objectSpeed)
         #
-        super().setObjectSprite(spr)
+        super().setPlayerSprite(spr)
+        self._ttl = time_to_die
     def getObjectXYByList(self):
         return super().getCoordination()
     def getObjectXYByTuple(self):
@@ -120,5 +123,13 @@ class Item(ObjectCoordinate):
         return super().getPlayerSprite()
     def setObjectSpeed(self, coor):
         super().setSpeed(coor)
+    def getObjectSpeed(self):
+        return super().getSpeed()
     def movObjectCoordination(self, coor = [0,0]):
         super().movCoordination(coor)
+    def setTTL(self, time_to_die):
+        self._ttl = time_to_die
+    def getTTL(self):
+        return self._ttl
+    def doTTL(self):
+        self._ttl -= 1
