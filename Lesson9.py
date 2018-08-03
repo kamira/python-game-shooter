@@ -123,7 +123,7 @@ while not quit:
         if other.getObjectY() > HEIGHT:
             others = [ x for x in others if not (x.getObjectX() == other.getObjectX() and x.getObjectY() == other.getObjectY())]
     if (random.randint(0, 10) == 0) and len(others) <= 5:
-        others.append( Item( [random.randint(0, 500),0], [50,50], [0,5], "sprite/su27.png") )
+        others.append( Item( [random.randint(0, 500),0], [100,50], [0,5], "sprite/su27.png") )
         
     for bullet in bullets:
         bullet.movObjectCoordination()

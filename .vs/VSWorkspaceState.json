@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\classes",
+    "\\sprite"
   ],
-  "SelectedNode": "\\Lesson5.py",
+  "SelectedNode": "\\classes",
   "PreviewInSolutionExplorer": false
 }
