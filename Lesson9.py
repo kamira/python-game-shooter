@@ -133,6 +133,7 @@ while not quit:
             if event.type == QUIT :
                 quit = True
                 title_circle = False
+                pygame.quit()
             elif event.type == KEYDOWN:
                 if event.key == K_UP:
                     MENU_SELCETER += 1
@@ -182,6 +183,7 @@ while not quit:
             if event.type == QUIT :
                 quit = True
                 game_circle = True
+                pygame.quit()
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     quit = True
